@@ -1,8 +1,8 @@
-# `@atomist/ts-sample-skill`
+# `@atomist/go-format-skill`
 
-`@atomist/ts-sample-skill` is licensed under Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
+`@atomist/go-format-skill` is licensed under Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-This page details all runtime dependencies of `@atomist/ts-sample-skill`.
+This page details all runtime dependencies of `@atomist/go-format-skill`.
 
 ## Licenses
 
