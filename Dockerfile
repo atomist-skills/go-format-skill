@@ -33,6 +33,7 @@ ENV BLUEBIRD_WARNINGS=0 \
 LABEL com.docker.skill.api.version="container/v2"
 COPY skill.yaml /
 COPY datalog /datalog
+COPY docs/images/icon.svg /icon.svg
 
 WORKDIR "/skill"
 

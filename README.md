@@ -1,18 +1,13 @@
-# TypeScript Sample Skill
+# Go Format Skill
 
-Simple skill showing how to subscribe to and transact new data written in
-TypeScript.
+Skill to run the following commands on an commit to repositories containing
+`go.mod` files:
 
-## Files
-
-| File                                                                                         | Description                                                  |
-| -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [datalog/schema/commit_signature.edn](datalog/schema/commit_signature.edn)                   | Datalog schema defining Commit signature facts               |
-| [datalog/subscription/on_push.edn](datalog/subscription/on_push.edn)                         | Subscription for new pushes                                  |
-| [datalog/subscription/on_commit_signature.edn](datalog/subscription/on_commit_signature.edn) | Subscription for new commit signatures added to the database |
-| [lib/events.ts](lib/events.ts)                                                               | TypeScript file defining the event handlers                  |
-| [Dockerfile](Dockerfile)                                                                     | Dockerfile to build the Skill runtime container image        |
-| [skill.ts](skill.ts)                                                                         | Skill descriptor (metadata and parameters etc)               |
+```shell
+$ go mod tidy
+$ gofmt -w .
+$ goimports -w .
+```
 
 ## Contributing
 
@@ -79,4 +74,3 @@ Created by [Atomist][atomist]. Need Help? [Join our Slack workspace][slack].
 
 [atomist]: https://atomist.com/ "Atomist"
 [slack]: https://join.atomist.com/ "Atomist Community Slack"
-
