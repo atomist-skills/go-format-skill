@@ -6,11 +6,29 @@ WORKDIR /usr/src
 COPY . ./
 
 RUN npm ci --no-optional --include=dev \
- && npm run compile test \
+ && npm run compile \
  && rm -rf node_modules .git
 
 # Set up runtime container
-FROM atomist/skill:alpine_3.16-node_16@sha256:45b4a0b5c48576a7269f8b2861ebc05cec1881cfb48abbb21aa8215ccf6bd3c6
+FROM golang:1.18-alpine3.16
+
+# Install goimports
+RUN go install golang.org/x/tools/cmd/goimports@latest
+
+# Install Node.js
+RUN apk add --no-cache \
+ nodejs=16.16.0-r0
+
+# Install Git
+RUN apk add --no-cache \
+ git=2.36.2-r0
+
+# ENV VARs needed for Node.js
+ENV BLUEBIRD_WARNINGS=0 \
+ NODE_ENV=production \
+ NODE_NO_WARNINGS=1 \
+ NPM_CONFIG_LOGLEVEL=warn \
+ SUPPRESS_NO_CONFIG_WARNING=true
 
 LABEL com.docker.skill.api.version="container/v2"
 COPY skill.yaml /

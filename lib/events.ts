@@ -15,10 +15,8 @@
  */
 
 import {
-	datalog,
 	EventHandler,
 	github,
-	log,
 	repository,
 	status,
 	subscription,
@@ -33,73 +31,59 @@ export const on_push: EventHandler<
 	const commit = ctx.event.context.subscription.result[0][0];
 	const repo = commit["git.commit/repo"];
 	const org = repo["git.repo/org"];
+	const branch = commit["git.ref/refs"].find(
+		r => r["git.ref/type"]["db/ident"] === "git.ref.type/branch",
+	)?.["git.ref/name"];
 
-	const gitCommit = (
-		await github
-			.api(
-				repository.gitHub({
-					owner: org["git.org/name"],
-					repo: repo["git.repo/name"],
-					credential: org["github.org/installation-token"]
-						? {
-								token: org["github.org/installation-token"],
-								scopes: [],
-						  }
-						: undefined,
-				}),
-			)
-			.repos.getCommit({
-				owner: org["git.org/name"],
-				repo: repo["git.repo/name"],
-				ref: commit["git.commit/sha"],
-			})
-	).data;
+	if (!branch || branch.startsWith("atomist/")) {
+		return status.completed(`Ignoring missing or atomist branch`);
+	}
 
-	await ctx.datalog.transact([
-		datalog.entity("git/repo", "$repo", {
-			"sourceId": repo["git.repo/source-id"],
-			"git.provider/url": org["git.provider/url"],
+	const p = await ctx.project.clone(
+		repository.gitHub({
+			owner: org["git.org/name"],
+			repo: repo["git.repo/name"],
+			//branch,
+			sha: commit["git.commit/sha"],
+			credential: org["github.org/installation-token"]
+				? {
+						token: org["github.org/installation-token"],
+						scopes: [],
+				  }
+				: undefined,
 		}),
-		datalog.entity("git/commit", "$commit", {
-			"sha": commit["git.commit/sha"],
-			"repo": "$repo",
-			"git.provider/url": org["git.provider/url"],
-		}),
-		datalog.entity("git.commit/signature", {
-			commit: "$commit",
-			signature: gitCommit.commit.verification.signature,
-			status: gitCommit.commit.verification.verified
-				? datalog.asKeyword("git.commit.signature/VERIFIED")
-				: datalog.asKeyword("git.commit.signature/NOT_VERIFIED"),
-			reason: gitCommit.commit.verification.reason,
-		}),
-	]);
-
-	log.info("Transacted commit signature for %s", commit["git.commit/sha"]);
-
-	return status.completed(
-		"Successfully transacted commit signature for 1 commit",
-	);
-};
-
-interface CommitSignature {
-	"git.commit.signature/signature": string;
-	"git.commit.signature/reason": string;
-	"git.commit.signature/status": string;
-}
-
-export const on_commit_signature: EventHandler<
-	[subscription.datalog.OnPush, CommitSignature],
-	Configuration
-> = async ctx => {
-	const result = ctx.event.context.subscription.result[0];
-	const commit = result[0];
-	const signature = result[1];
-	log.info(
-		"Commit %s is signed and verified by: %s",
-		commit["git.commit/sha"],
-		signature["git.commit.signature/signature"],
+		{ alwaysDeep: false, detachHead: false },
 	);
 
-	return status.completed("Detected signed and verified commit");
+	// go mod tidy
+	await p.exec("go", ["mod", "tidy"]);
+	// gofmt -w *.go
+	await p.exec("gofmt", ["-w", "."]);
+	// goimports -w *.go
+	await p.exec("goimports", ["-w", "."]);
+
+	return github.persistChanges(
+		ctx,
+		p,
+		"pr",
+		{
+			branch,
+			defaultBranch: repo["git.repo/default-branch"],
+			author: {
+				login: commit["git.commit/author"]["git.user/login"],
+				name: commit["git.commit/author"]["git.user/name"],
+				email: commit["git.commit/author"]["git.user/emails"]?.[0]?.[
+					"email.email/address"
+				],
+			},
+		},
+		{
+			branch: `atomist/gofmt-${branch}`,
+			title: "Go format fixes",
+			body: "Go format fixed warnings and/or errors",
+		},
+		{
+			message: "Fixes from gofmt and goimports",
+		},
+	);
 };

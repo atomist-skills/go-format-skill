@@ -47,7 +47,7 @@ describe("on_push", () => {
                :git.user/emails
                  [{:email.email/address "cd@atomist.com"}]}
             :git.commit/sha
-              "68c3d821eddc46c4dc4b1de0ffb1a6c29a5342a9"
+              "7b75293a7184eba982f8e970c16e2bab73da2169"
             :git.commit/message "Update README.md"
             :git.ref/refs
               [{:git.ref/name "main"

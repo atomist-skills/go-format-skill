@@ -14,11 +14,18 @@
 
 skill:
   apiVersion: v2
-  displayName: TypeScript Sample Skill
+  displayName: Go Format Skill
   author: Atomist
-  description: Very basic skill written in TypeScript
+  description: Skill to format Go code using gofmt and goimports
   license: Apache-2.0
   parameters:
+    - fileFilter:
+        name: paths-to-index
+        description: Paths to index
+        visibility: hidden
+        defaultValue:
+          - "**/go.mod"
+        required: false
     - repoFilter:
         name: repoFilter
         displayName: Which repositories

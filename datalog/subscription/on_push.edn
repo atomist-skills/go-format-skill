@@ -32,7 +32,9 @@
     :git.commit/message])
  :in $ $before-db % ?ctx
  :where
- (push-tx ?ctx ?commit ?ref)
+ (attributes-tx ?ctx ?commit :git.commit/file ?file)
+ [?file :git.file/path ?file-path]
+ (string-match ?file-path "go\\.mod" _)
 
  ;; check repo filter
  [?commit :git.commit/repo ?repo]
