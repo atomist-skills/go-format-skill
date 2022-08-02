@@ -85,19 +85,19 @@ ${commands
 					if (runGoModTidy) {
 						// go mod tidy
 						await p.exec("go", ["mod", "tidy"]);
-						return "Run go mod tidy";
+						return "Run `go mod tidy`";
 					}
 					return undefined;
 				},
 				async () => {
 					// gofmt -w *.go
 					await p.exec("gofmt", ["-w", "."]);
-					return "Run gofmt -w .";
+					return "Run `gofmt -w .`";
 				},
 				async () => {
 					// goimports -w *.go
 					await p.exec("goimports", ["-w", "."]);
-					return "Run goimports -w .";
+					return "Run `goimports -w .`";
 				},
 			],
 		},
