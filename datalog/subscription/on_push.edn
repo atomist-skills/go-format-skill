@@ -36,6 +36,12 @@
  [?file :git.file/path ?file-path]
  (string-match ?file-path "go\\.mod" _)
 
+ ;; filter out pushes to our atomist/ branches
+ [?ref :git.ref/commit ?commit]
+ [?ref :git.ref/type :git.ref.type/branch]
+ [?ref :git.ref/name ?branch]
+ (not (string-match ?branch "^atomist\\/" _))
+
  ;; check repo filter
  [?commit :git.commit/repo ?repo]
  (skill-repo-selected? ?ctx ?repo)]

@@ -14,13 +14,7 @@
  * limitations under the License.
  */
 
-import {
-	EventHandler,
-	github,
-	repository,
-	status,
-	subscription,
-} from "@atomist/skill";
+import { EventHandler, github, repository, subscription } from "@atomist/skill";
 
 export const on_push: EventHandler<
 	[subscription.datalog.OnPush]
@@ -31,10 +25,6 @@ export const on_push: EventHandler<
 	const branch = commit["git.ref/refs"].find(
 		r => r["git.ref/type"]["db/ident"] === "git.ref.type/branch",
 	)?.["git.ref/name"];
-
-	if (!branch || branch.startsWith("atomist/")) {
-		return status.completed(`Ignoring missing or atomist branch`);
-	}
 
 	const p = await ctx.project.clone(
 		repository.gitHub({
