@@ -65,7 +65,7 @@ export const on_push: EventHandler<
 	return github.persistChanges(
 		ctx,
 		p,
-		"pr",
+		"pr_default_commit",
 		{
 			branch,
 			defaultBranch: repo["git.repo/default-branch"],
