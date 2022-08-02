@@ -80,10 +80,16 @@ export const on_push: EventHandler<
 		{
 			branch: `atomist/gofmt-${branch}`,
 			title: "Go format fixes",
-			body: "Go format fixed warnings and/or errors",
+			body: `Ran the following commands and fixed some issues:
+
+\`\`\`
+$ go mod tidy
+$ gofmt -w .
+$ goimports -w .
+\`\`\``,
 		},
 		{
-			message: "Fixes from gofmt and goimports",
+			message: "Go format fixes",
 		},
 	);
 };
