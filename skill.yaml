@@ -19,6 +19,12 @@ skill:
   description: Skill to format Go code using gofmt and goimports
   license: Apache-2.0
   parameters:
+    - boolean:
+        name: goModTidy
+        displayName: Go Mod
+        description: Run `go mod tidy`
+        defaultValue: false
+        required: false
     - fileFilter:
         name: paths-to-index
         description: Paths to index

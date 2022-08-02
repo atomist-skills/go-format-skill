@@ -22,11 +22,8 @@ import {
 	subscription,
 } from "@atomist/skill";
 
-import { Configuration } from "./configuration";
-
 export const on_push: EventHandler<
-	[subscription.datalog.OnPush],
-	Configuration
+	[subscription.datalog.OnPush]
 > = async ctx => {
 	const commit = ctx.event.context.subscription.result[0][0];
 	const repo = commit["git.commit/repo"];
@@ -55,12 +52,15 @@ export const on_push: EventHandler<
 		{ alwaysDeep: false, detachHead: false },
 	);
 
-	// go mod tidy
-	await p.exec("go", ["mod", "tidy"]);
-	// gofmt -w *.go
-	await p.exec("gofmt", ["-w", "."]);
-	// goimports -w *.go
-	await p.exec("goimports", ["-w", "."]);
+	const runGoModTidy =
+		ctx.event.context.subscription.configuration?.parameters?.find(
+			p => p.name === "goModTidy",
+		)?.value || false;
+	const commands = [
+		runGoModTidy ? "go mod tidy" : undefined,
+		"gofmt -w .",
+		"goimports -w .",
+	];
 
 	return github.persistChanges(
 		ctx,
@@ -83,13 +83,33 @@ export const on_push: EventHandler<
 			body: `Ran the following commands and fixed some issues:
 
 \`\`\`
-$ go mod tidy
-$ gofmt -w .
-$ goimports -w .
+${commands
+	.filter(c => !!c)
+	.map(c => `$ ${c}`)
+	.join("\n")}
 \`\`\``,
 		},
 		{
-			message: "Go format fixes",
+			editors: [
+				async () => {
+					if (runGoModTidy) {
+						// go mod tidy
+						await p.exec("go", ["mod", "tidy"]);
+						return "Run go mod tidy";
+					}
+					return undefined;
+				},
+				async () => {
+					// gofmt -w *.go
+					await p.exec("gofmt", ["-w", "."]);
+					return "Run gofmt -w .";
+				},
+				async () => {
+					// goimports -w *.go
+					await p.exec("goimports", ["-w", "."]);
+					return "Run goimports -w .";
+				},
+			],
 		},
 	);
 };
