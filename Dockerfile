@@ -10,7 +10,7 @@ RUN npm ci --no-optional --include=dev \
  && rm -rf node_modules .git
 
 # Set up runtime container
-FROM golang:1.18-alpine3.16
+FROM golang:1.18-alpine3.16@sha256:dda10a0c69473a595ab11ed3f8305bf4d38e0436b80e1462fb22c9d8a1c1e808
 
 # Install goimports
 RUN go install golang.org/x/tools/cmd/goimports@latest
