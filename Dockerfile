@@ -1,5 +1,5 @@
 # Set up build
-FROM node:lts@sha256:10c88537539012bd30777e41fdd30b30d088abb6dfc995f77ace26071052d4d1 AS build
+FROM node:lts@sha256:4e85818bd0d023d4f9025730dc0640d3d8269e3d1a84ce6365eca8fbad7a3ee9 AS build
 
 WORKDIR /usr/src
 
@@ -10,7 +10,7 @@ RUN npm ci --no-optional --include=dev \
  && rm -rf node_modules .git
 
 # Set up runtime container
-FROM golang:1.18-alpine3.16@sha256:8e45e2ef37d2b6d98900392029db2bc88f42c0f2a9a8035fa7da90014698e86b
+FROM golang:1.19-alpine3.16
 
 # Install goimports
 RUN go install golang.org/x/tools/cmd/goimports@latest
