@@ -38,7 +38,7 @@ Apache License 2.0 - [http://www.apache.org/licenses/LICENSE-2.0](http://www.apa
 
 | Name                                        | Version              | Publisher                   | Repository                                                                                                                             |
 | ------------------------------------------- | -------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `@atomist/skill`                            | `1.0.0-branch-v2.13` | Atomist, Inc.               | [https://github.com/atomist-skills/skill](https://github.com/atomist-skills/skill)                                                     |
+| `@atomist/skill`                            | `1.0.0-branch-v2.16` | Atomist, Inc.               | [https://github.com/atomist-skills/skill](https://github.com/atomist-skills/skill)                                                     |
 | `@aws-crypto/ie11-detection`                | `2.0.0`              | AWS Crypto Tools Team       | [https://github.com/aws/aws-sdk-js-crypto-helpers](https://github.com/aws/aws-sdk-js-crypto-helpers)                                   |
 | `@aws-crypto/sha256-browser`                | `2.0.0`              | AWS Crypto Tools Team       | [https://github.com/aws/aws-sdk-js-crypto-helpers](https://github.com/aws/aws-sdk-js-crypto-helpers)                                   |
 | `@aws-crypto/sha256-js`                     | `2.0.0`              | AWS Crypto Tools Team       | [https://github.com/aws/aws-sdk-js-crypto-helpers](https://github.com/aws/aws-sdk-js-crypto-helpers)                                   |
