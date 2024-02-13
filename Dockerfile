@@ -17,11 +17,11 @@ RUN go install golang.org/x/tools/cmd/goimports@latest
 
 # Install Node.js
 RUN apk add --no-cache \
- nodejs=16.16.0-r0
+ nodejs=16.20.2-r0
 
 # Install Git
 RUN apk add --no-cache \
- git=2.36.2-r0
+ git=2.36.6-r0
 
 # ENV VARs needed for Node.js
 ENV BLUEBIRD_WARNINGS=0 \
@@ -44,7 +44,7 @@ RUN apk add --no-cache \
  && npm ci --no-optional \
  && npm cache clean --force \
  && apk del npm
-    
+
 COPY --from=build /usr/src/ .
 
 ENTRYPOINT ["node", "--no-deprecation", "--no-warnings", "--expose_gc", "--optimize_for_size", "--always_compact", "--max_old_space_size=512", "/skill/node_modules/.bin/atm-skill"]
